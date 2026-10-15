@@ -48,7 +48,7 @@ def starve(iface, max_leases=254):
 
         offered_ip = offer[BOOTP].yiaddr
         server_id = next(
-            (o[1] for o in offer[DHCP].option
+            (o[1] for o in offer[DHCP].options
              if isinstance(o, tuple) and o[0] == "server_id"),
             offer[IP].src,
         )
